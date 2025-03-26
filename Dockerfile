@@ -1,11 +1,12 @@
-# Используем базовый образ OpenJDK 17 с JDK
 FROM eclipse-temurin:17-jdk
 
-# Указываем рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Копируем JAR-файл в контейнер
+# Собираем проект внутри контейнера, если JAR файл не был собран заранее
+COPY . .
+RUN mvn clean install -DskipTests
+
+# Копируем JAR файл
 COPY target/ComplimentBot-0.0.1-SNAPSHOT.jar app.jar
 
-# Указываем команду запуска
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
