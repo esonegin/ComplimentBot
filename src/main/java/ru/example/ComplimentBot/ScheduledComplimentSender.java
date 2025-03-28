@@ -4,25 +4,34 @@ package ru.example.ComplimentBot;
  * @author onegines
  * @date 26.03.2025
  */
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import ru.example.ComplimentBot.services.ComplimentService;
 import ru.example.ComplimentBot.services.TelegramBotService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class ScheduledComplimentSender {
 
     private final TelegramBotService telegramBotService;
     private final ComplimentService complimentService;
+    @Value("${telegram.bot.chat-id}")
+    private Long chatId;  // Получение chatId из application.properties
 
-    @Scheduled(cron = "0 0 9 * * ?")  // Каждое утро в 9:00
+    @Autowired
+    public ScheduledComplimentSender(TelegramBotService telegramBotService, ComplimentService complimentService) {
+        this.telegramBotService = telegramBotService;
+        this.complimentService = complimentService;
+    }
+
+    @Scheduled(cron = "0 * * * * ?")  // Каждую минуту
     public void sendDailyCompliment() {
         String compliment = complimentService.getRandomCompliment();
-        telegramBotService.sendMessage("123456789", compliment);  // Укажи свой chatId
+        telegramBotService.sendMessage(chatId, compliment);  // Укажи свой chatId
         log.info("Отправлен комплимент: {}", compliment);
     }
+
 }
