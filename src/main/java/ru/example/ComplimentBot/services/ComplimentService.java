@@ -4,39 +4,31 @@ package ru.example.ComplimentBot.services;
  * @author onegines
  * @date 26.03.2025
  */
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Random;
-
+@Slf4j
 @Service
 public class ComplimentService {
-    private final List<String> compliments = List.of(
-            "Ты сегодня выглядишь потрясающе! 😍",
-            "У тебя невероятно красивая улыбка 😊",
-            "Ты – настоящий вдохновитель! 💡",
-            "Ты умеешь делать этот мир лучше! 🌍",
-            "Ты особенный человек! 💖",
-            "Твоя энергия заражает всех вокруг! ⚡️",
-            "Ты всегда знаешь, как поднять настроение! 🌟",
-            "С тобой всегда легко и приятно общаться! 😊",
-            "Ты невероятно талантливый человек! 🎨",
-            "Твои идеи всегда необычные и интересные! 💭",
-            "Ты делаешь мир ярче своим присутствием! 🌈",
-            "Ты — источник позитива и радости! ✨",
-            "Ты умеешь делать обычные моменты особенными! 💫",
-            "Ты — как лучик света в этом мире! 🌞",
-            "Твои поступки вдохновляют других! 💪",
-            "Ты замечательно решаешь любые задачи! 🔑",
-            "Ты всегда знаешь, как поддержать в трудную минуту! 🤗",
-            "Ты невероятно сильный и смелый человек! 🦸‍♂️",
-            "Твоя доброта не имеет границ! 💕",
-            "Ты заставляешь окружающих чувствовать себя важными! 🥰"
-    );
+    private static final String COMPLIMENT_API_URL = "https://tools-api.robolatoriya.com/compliment?type=1";
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final Random random = new Random();
+    public ComplimentService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public String getRandomCompliment() {
-        return compliments.get(random.nextInt(compliments.size()));
+        String response = restTemplate.getForObject(COMPLIMENT_API_URL, String.class);
+
+        try {
+            JsonNode jsonNode = objectMapper.readTree(response);
+            return jsonNode.get("text").asText();
+        } catch (Exception e) {
+            return "Ошибка получения комплимента 😢";
+        }
     }
 }

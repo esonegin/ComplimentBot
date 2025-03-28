@@ -27,11 +27,11 @@ public class ScheduledComplimentSender {
         this.complimentService = complimentService;
     }
 
-    @Scheduled(cron = "0 * * * * ?")  // Каждую минуту
+    @Scheduled(cron = "0 */15 * * * ?")
     public void sendDailyCompliment() {
         String compliment = complimentService.getRandomCompliment();
-        telegramBotService.sendMessage(chatId, compliment);  // Укажи свой chatId
-        log.info("Отправлен комплимент: {}", compliment);
+        telegramBotService.sendMessage(chatId, compliment);
+        log.info("✅ Отправлен комплимент: {}", compliment);
     }
 
 }
