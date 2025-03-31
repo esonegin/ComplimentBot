@@ -21,5 +21,6 @@ public class ComplimentBotApplication {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 }

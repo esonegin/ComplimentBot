@@ -6,6 +6,8 @@ package ru.example.ComplimentBot;
  */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import ru.example.ComplimentBot.services.ComplimentService;
 import ru.example.ComplimentBot.services.TelegramBotService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@Scope("singleton")
+@Primary
 public class ScheduledComplimentSender {
 
     private final TelegramBotService telegramBotService;
